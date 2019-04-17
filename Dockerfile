@@ -15,8 +15,8 @@ RUN  apt-get update \
 # Setup IB TWS
 RUN mkdir -p /opt/TWS
 WORKDIR /opt/TWS
-RUN wget -q http://cdn.quantconnect.com/interactive/ibgateway-latest-standalone-linux-x64-v974.4g.sh
-RUN chmod a+x ibgateway-latest-standalone-linux-x64-v974.4g.sh
+RUN wget -q https://download2.interactivebrokers.com/installers/ibgateway/latest-standalone/ibgateway-latest-standalone-linux-x64.sh
+RUN chmod a+x ibgateway-latest-standalone-linux-x64.sh
 
 # Setup  IBController
 RUN mkdir -p /opt/IBController/ && mkdir -p /root/IBController/Logs
@@ -38,7 +38,7 @@ RUN \
 WORKDIR /
 
 # Install TWS
-RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64-v974.4g.sh
+RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64.sh
 
 #CMD yes
 
