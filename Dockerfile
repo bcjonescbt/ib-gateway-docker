@@ -4,6 +4,7 @@ MAINTAINER Mike Ehrenberg <mvberg@gmail.com>
 RUN  apt-get update \
   && apt-get install -y wget \
   && apt-get install -y unzip \
+  && apt-get install -y dos2unix \
   && apt-get install -y xvfb \
   && apt-get install -y libxtst6 \
   && apt-get install -y libxrender1 \
@@ -25,20 +26,28 @@ RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.
 RUN unzip ./IBController-QuantConnect-3.2.0.5.zip
 RUN chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
 
+COPY ./jre-latest-x64.tar.gz /tmp
+WORKDIR /usr/java
+RUN tar zxf /tmp/jre-latest-x64.tar.gz && \
+   rm -rf /tmp/jre-latest-x64.tar.gz && \
+   ln -s /usr/java/jre* /usr/java/curr
+ENV JAVA_HOME /usr/java/curr
+
 # Install Java 8 TODO maybe just use "from:java8"
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  apt-get install -y dos2unix && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+#RUN \
+  #echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  #add-apt-repository -y ppa:webupd8team/java && \
+  #apt-get update && \
+  #apt-get install -y oracle-java8-installer && \
+  #apt-get install -y dos2unix && \
+  #rm -rf /var/lib/apt/lists/* && \
+  #rm -rf /var/cache/oracle-jdk8-installer
 
 WORKDIR /
 
-# Install TWS
-RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64.sh
+# Install IB Gateway
+RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64.sh  && \
+  rm /opt/TWS/ibgateway-latest-standalone-linux-x64.sh
 
 #CMD yes
 
@@ -66,5 +75,8 @@ RUN dos2unix /usr/bin/xvfb-daemon-run \
 # Below files copied during build to enable operation without volume mount
 COPY ./ib/IBController.ini /root/IBController/IBController.ini
 COPY ./ib/jts.ini /root/Jts/jts.ini
+
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
 
 CMD bash runscript.sh

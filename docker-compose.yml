@@ -3,25 +3,26 @@ services:
   tws:
     build: .
     ports:
+      - "4001:4001"
       - "4003:4003"
-      - "5901:5900"
+      - "5900:5900"
     volumes:
       - ./ib/IBController.ini:/root/IBController/IBController.ini
       - ./ib/jts.ini:/root/Jts/jts.ini
     environment:
-      - TZ=America/Chicago
+      - TZ=America/New_York
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
-      - VNC_PASSWORD=1234 # CHANGEME
-      - TWS_MAJOR_VRSN=974
+      - VNC_PASSWORD=vncpassword
+      - TWS_MAJOR_VRSN=975
       - IBC_INI=/root/IBController/IBController.ini
       - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
       - TWS_CONFIG_PATH=/root/Jts
       - LOG_PATH=/opt/IBController/Logs
-      - TRADING_MODE=paper # either paper or live
-      - TWSUSERID=fdemo # IB account
-      - TWSPASSWORD=demouser # IB account password
+      - TRADING_MODE=live # either paper or live
+      - TWSUSERID= # IB account
+      - TWSPASSWORD=  # IB account password
       - FIXUSERID=
       - FIXPASSWORD=
-      - JAVA_PATH=
+      - JAVA_PATH=/usr/java/curr/bin
       - APP=GATEWAY
